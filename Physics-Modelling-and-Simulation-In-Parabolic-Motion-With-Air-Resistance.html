@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerak Peluru</title>
+</head>
+<body>
+    <h2>dengan hambatan</h2>
+
+	<script src="p5.min.js"></script>
+	<script type="text/javascript">
+		let pos, vel, acc, angle = 35, t = 0, m = .15, v0 = 50, vx, v;
+		const D = .0013, dt = .01, g = 9.806, trails = [];
+
+		function setup() {
+			createCanvas(600, 200);
+			pos = createVector(30, 170);
+			angleRad = angle * Math.PI / 180;
+			vel = createVector(v0 * Math.cos(angleRad), v0 * Math.sin(angleRad));
+			vx = vel.x;
+		    v = Math.sqrt(vel.x**2 + vel.y**2);
+			acc = createVector(0, -g);
+		}
+
+		function draw() {
+			background(44, 62, 80);
+			// update data
+			trails.push(pos.copy());
+			acc.x = -(D / m) * v * vel.x;
+			acc.y = -g - (D / m) * v * vel.y;
+		    v = Math.sqrt(vel.x**2 + vel.y**2);
+			vel.x = vel.x + acc.x * dt;
+			vel.y = vel.y + acc.y * dt;
+			pos.x = pos.x + vel.x * dt;
+			pos.y = pos.y - vel.y * dt;
+			t += dt;
+
+			console.log('x: ' + (pos.x-30) + '\ny: ' + (pos.y-170)*-1 + '\nt: ' + t);
+
+			if (pos.y >= 170) noLoop();
+
+			// draw ball
+			fill(255, 255, 255);
+			noStroke();
+			let i = 0;
+			for (const trail of trails) {
+				if (i % 40 == 0) ellipse(trail.x, trail.y, 10, 10);
+				i++;
+			}
+			fill(235, 47, 6);
+			noStroke();
+			ellipse(pos.x, pos.y, 30, 30);
+		}
+	</script>
+</body>
+</html>
